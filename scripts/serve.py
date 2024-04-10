@@ -14,7 +14,7 @@ def lambda_handler(event, c):
         }
     
     body = event["body"]
-    url = base64.b64decode(body).decode("utf-8")  
+    url = json.loads(body)["url"]
 
     parsed_url = urlparse(url)
     query_params = parse_qs(parsed_url.query)
@@ -36,9 +36,10 @@ def lambda_handler(event, c):
     base_url = url.split("&headers=")[0]
 
     http = urllib3.PoolManager()
+    print("I'm getting", base_url, "with headers", headers)
     response = http.request("GET", base_url, headers=headers)
-    
+
     return {
         "statusCode": response.status,
-        "body": response.data
+        "body": response.data,
     }
